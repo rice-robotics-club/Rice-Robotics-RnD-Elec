@@ -1,32 +1,25 @@
+#include "ros.h"
 #include "laser.h"
 #include "imu.h"
-
-#define LED_BUILTIN 2
+#include <micro_ros_arduino.h>
 
 void setup() {
-  Serial.begin(115200);
+  setupMicroROS();
   setupDistance();
   setupIMU();
   
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);  
+  delay(2000);
 
   delay(2000);
 }
-
 
 void loop() {
   updateDistance();
   updateIMU();
 
-  Serial.print("Distance: ");
-  Serial.println(distance);
-
-  Serial.print("Pitch: ");
-  Serial.println(pitch);
-
-  Serial.print("Yaw: ");
-  Serial.println(yaw);
-
+  rcl_publish(&publisher, &msg, NULL);
   delay(100);
+  //RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100)));
 }
