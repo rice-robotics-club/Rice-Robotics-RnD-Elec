@@ -12,12 +12,15 @@ void setup() {
   digitalWrite(LED_BUILTIN, HIGH);  
   delay(2000);
 
-  delay(2000);
 }
 
 void loop() {
   updateDistance();
   updateIMU();
+  
+  msg.x = distance;
+  msg.y = pitch;
+  msg.z = yaw;
 
   rcl_publish(&publisher, &msg, NULL);
   delay(100);
