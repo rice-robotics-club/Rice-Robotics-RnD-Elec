@@ -177,7 +177,7 @@ void loop()
     //if ( data.header < 0x100) SERIAL_PORT.print( "0" );
     //if ( data.header < 0x10) SERIAL_PORT.print( "0" );
     //SERIAL_PORT.println( data.header, HEX );
-
+    
     if ((data.header & DMP_header_bitmap_Quat6) > 0) // We have asked for GRV data so we should receive Quat6
     {
       // Q0 value is computed from this equation: Q0^2 + Q1^2 + Q2^2 + Q3^2 = 1.
@@ -244,6 +244,8 @@ void loop()
       double t4 = +1.0 - 2.0 * (qy * qy + qz * qz);
       double yaw = atan2(t3, t4) * 180.0 / PI;
 
+      
+
 #ifndef QUAT_ANIMATION
       SERIAL_PORT.print(F("Distance:"));
       SERIAL_PORT.print(distance, 2);
@@ -270,7 +272,8 @@ void loop()
 
   if (myICM.status != ICM_20948_Stat_FIFOMoreDataAvail) // If more data is available then we should read it right away - and not delay
   {
-    delay(10);
+    delayMicroseconds(500);
   }
 }
+
 
