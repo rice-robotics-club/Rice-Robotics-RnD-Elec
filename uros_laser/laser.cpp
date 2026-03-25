@@ -4,7 +4,7 @@
 #define TX_PIN 17
 #define RX_PIN 16
 
-char boot_buffer[4]  = {0x80, 0x06, 0x03, 0x77};
+char boot_buffer[4]  = {0x80, 0x06, 0x02, 0x78};
 unsigned char data[11] = {0};
 float distance;
 
