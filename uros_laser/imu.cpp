@@ -3,7 +3,6 @@
 
 ICM_20948_I2C myICM; 
 
-// Global variables defined here
 float pitch = 0, roll = 0, yaw = 0;
 
 void setupIMU() {
@@ -50,18 +49,18 @@ void updateIMU() {
       // roll (x-axis rotation)
       double t0 = +2.0 * (qw * qx + qy * qz);
       double t1 = +1.0 - 2.0 * (qx * qx + qy * qy);
-      double roll = atan2(t0, t1) * 180.0 / PI;
+      roll = atan2(t0, t1) * 180.0 / PI;
 
       // pitch (y-axis rotation)
       double t2 = +2.0 * (qw * qy - qx * qz);
       t2 = t2 > 1.0 ? 1.0 : t2;
       t2 = t2 < -1.0 ? -1.0 : t2;
-      double pitch = asin(t2) * 180.0 / PI;
+      pitch = asin(t2) * 180.0 / PI;
 
       // yaw (z-axis rotation)
       double t3 = +2.0 * (qw * qz + qx * qy);
       double t4 = +1.0 - 2.0 * (qy * qy + qz * qz);
-      double yaw = atan2(t3, t4) * 180.0 / PI;
+      yaw = atan2(t3, t4) * 180.0 / PI;
   
     }
   }
