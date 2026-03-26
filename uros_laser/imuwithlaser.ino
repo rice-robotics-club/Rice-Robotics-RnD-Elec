@@ -1,41 +1,29 @@
-#include "laser.h"
+
+#include <Wire.h>
 #include "imu.h"
+#include "laser.h"
 
-const unsigned long imuInterval = 10;    // 100Hz for smooth control
-const unsigned long laserInterval = 50;  // 20Hz is usually plenty for distance
-const unsigned long printInterval = 100; // 10Hz for the Serial Monitor
-
-unsigned long lastImuTime = 0;
-unsigned long lastLaserTime = 0;
-unsigned long lastPrintTime = 0;
+#define SERIAL_PORT Serial
 
 void setup() {
-  Serial.begin(115200);
-  setupDistance(); 
-  setupIMU();
-
+    SERIAL_PORT.begin(115200);
+    setupIMU();
+    setupDistance();
+    
+    delay(500); 
 }
 
-void loop(){
-  unsigned long currentMillis = millis();
-  updateIMU();
-  if (currentMillis - lastLaserTime >= laserInterval) {
+void loop() {
+    updateIMU();
     updateDistance();
-    lastLaserTime = currentMillis;
-  }
-
-  static unsigned long last = 0;
-  if (currentMillis - lastPrintTime >= printInterval){
-    Serial.print("Dist: ");
-    Serial.print(distance);
-    Serial.print(" Pitch: ");
-    Serial.print(pitch);
-    Serial.print(" Yaw: ");
-    Serial.print(yaw);
-    Serial.println("");
-    lastPrintTime = currentMillis;
-  }
-  
+    
+    SERIAL_PORT.print(distance, 3);
+    SERIAL_PORT.print(",");
+    SERIAL_PORT.print(roll, 2);
+    SERIAL_PORT.print(",");
+    SERIAL_PORT.print(pitch, 2);
+    SERIAL_PORT.print(",");
+    SERIAL_PORT.println(yaw, 2);
+    delay(20); 
 }
-
 
