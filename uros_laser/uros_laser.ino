@@ -5,11 +5,19 @@
 
 #define BUTTON_PIN 15
 
-void setup() {
-  setupMicroROS();
+const unsigned long imuInterval = 10;    // 100Hz for smooth control
+const unsigned long laserInterval = 50;  // 20Hz is usually plenty for distance
+const unsigned long printInterval = 100; // 10Hz for the Serial Monitor
 
-  setupDistance();
+unsigned long lastImuTime = 0;
+unsigned long lastLaserTime = 0;
+unsigned long lastPrintTime = 0;
+
+void setup() {
+  Serial.begin(115200);
   setupIMU();
+  setupDistance();
+  //setupMicroROS();
   
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH);
@@ -20,10 +28,27 @@ void setup() {
 }
 
 void loop() {
-  updateDistance();
+  unsigned long currentMillis = millis();
   updateIMU();
+  if (currentMillis - lastLaserTime >= laserInterval) {
+    updateDistance();
+    lastLaserTime = currentMillis;
+  }
+  
 
   if (digitalRead(BUTTON_PIN) == LOW) { // publish data while button is held down
+
+      static unsigned long last = 0;
+      if (currentMillis - lastPrintTime >= printInterval){
+        Serial.print("Dist: ");
+        Serial.print(distance);
+        Serial.print(" Pitch: ");
+        Serial.print(pitch);
+        Serial.print(" Yaw: ");
+        Serial.print(yaw);
+        Serial.println("");
+        lastPrintTime = currentMillis;
+      }
       imu_msg.orientation.x = qx;
       imu_msg.orientation.y = qy;
       imu_msg.orientation.z = qz;
@@ -38,6 +63,5 @@ void loop() {
       rcl_publish(&imu_publisher, &imu_msg, NULL);
       rcl_publish(&distance_publisher, &distance_msg, NULL);
   }
-  delay(100);
   //RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(100))); // Not needed for publisher-only node
 }
