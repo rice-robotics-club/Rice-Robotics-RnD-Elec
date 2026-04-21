@@ -19,4 +19,4 @@ extern rcl_publisher_t distance_publisher;
 #define LED_BUILTIN 2
 
 void error_loop();
-void setupMicroROS(); 
+void setupMicroROS();
